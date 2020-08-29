@@ -36,9 +36,21 @@
       "website": "https://github.com/el/infobox-control",
       "description": "Adds a control to display an infobox or a gradient."
     },
+    "mapbox-gl-legend": {
+      "website": "https://github.com/watergis/mapbox-gl-legend",
+      "description": "adds legend control which is able to create legend panel from mapbox style to mapbox-gl."
+    },
     "mapbox-gl-opacity": {
       "website": "https://github.com/dayjournal/mapbox-gl-opacity",
       "description": "Make multiple tile layers transparent."
+    },
+    "mapbox-gl-popup": {
+      "website": "https://github.com/watergis/mapbox-gl-popup",
+      "description": "Adds popup control which can show attributes of targeted layers to mapbox-gl."
+    },
+    "mapbox-gl-print": {
+      "website": "https://github.com/watergis/mapbox-gl-print",
+      "description": "Adds print control to mapbox-gl."
     },
     "mapbox-gl-style-switcher": {
       "website": "https://github.com/el/style-switcher",
