@@ -29,7 +29,7 @@
     },
     "mapbox-gl-export": {
       "website": "https://github.com/watergis/mapbox-gl-export",
-      "description": "Adds a control that exports PDF and image."
+      "description": "Adds a control that exports the map as a PDF or PNG."
     },
     "mapbox-gl-geocoder": {
       "website": "https://github.com/mapbox/mapbox-gl-geocoder",
