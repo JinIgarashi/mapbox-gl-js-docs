@@ -38,7 +38,7 @@
     },
     "mapbox-gl-legend": {
       "website": "https://github.com/watergis/mapbox-gl-legend",
-      "description": "adds legend control which is able to create legend panel from mapbox style to mapbox-gl."
+      "description": "Adds a control that shows a legend generated from the map style."
     },
     "mapbox-gl-opacity": {
       "website": "https://github.com/dayjournal/mapbox-gl-opacity",
