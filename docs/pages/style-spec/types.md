@@ -3,8 +3,8 @@ title: Types
 id: types
 description: A Mapbox style contains values of various types, most commonly as values for the style properties of a layer.
 contentType: specification
-order: 9
-layout: accordion
+order: 10
+layout: page
 products:
 - Mapbox Style Specification
 ---

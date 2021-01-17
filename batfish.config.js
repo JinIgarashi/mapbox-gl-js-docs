@@ -8,10 +8,22 @@ const {
 } = require('@mapbox/remark-lint-mapbox/frontmatter/mbx-tagger-batfish');
 const {
     buildNavigation,
-    buildTopics
+    buildFilters
 } = require('@mapbox/dr-ui/helpers/batfish/index.js');
-const pluginTopics = require('./docs/data/build-plugin-topics');
-const topicsOrder = require('./docs/data/topics.json');
+
+const addPages = [
+    {
+        title: 'Tutorials',
+        path: 'https://docs.mapbox.com/help/tutorials?product=Mapbox+GL+JS',
+        navOrder: 5
+    },
+    {
+        title: 'Troubleshooting',
+        path:
+            'https://docs.mapbox.com/help/troubleshooting?product=Mapbox+GL+JS',
+        navOrder: 6
+    }
+];
 
 const siteBasePath = '/mapbox-gl-js';
 module.exports = () => {
@@ -36,6 +48,10 @@ module.exports = () => {
             {
                 test: /\.html$/,
                 use: 'raw-loader'
+            },
+            {
+                test: /@mapbox\/mapbox-gl-style-spec\/expression\/definitions\/index.js$/,
+                sideEffects: true
             }
         ],
         ignoreWithinPagesDirectory: ['example/*.html'],
@@ -59,7 +75,6 @@ module.exports = () => {
                 require('rehype-slug'),
                 require('@mapbox/rehype-prism'),
                 require('@mapbox/dr-ui/plugins/add-links-to-headings'),
-                require('@mapbox/dr-ui/plugins/create-sections'),
                 require('@mapbox/dr-ui/plugins/make-table-scroll')
             ]
         },
@@ -68,17 +83,9 @@ module.exports = () => {
             mbxMeta: (data) => mbxTaggerBatfish(data),
             apiSearch: () => buildApiSearch(),
             apiNavigation: () => apiNavigation,
-            navigation: (data) => buildNavigation(siteBasePath, data),
-            topics: (data) =>
-                buildTopics(
-                    data,
-                    {
-                        // append plugin topics
-                        '/mapbox-gl-js/plugins/': { topics: pluginTopics }
-                    },
-                    // order of topics on examples page
-                    topicsOrder
-                )
+            navigation: (data) =>
+                buildNavigation({ siteBasePath, data, addPages }),
+            filters: (data) => buildFilters(data)
         },
         devBrowserslist: false,
         babelInclude: [
@@ -91,7 +98,7 @@ module.exports = () => {
 
     // Local builds treat the `dist` directory as static assets, allowing you to test examples against the
     // local branch build. Non-local builds ignore the `dist` directory, and examples load assets from the CDN.
-    config.unprocessedPageFiles = ['**/dist/**/*.*'];
+    config.unprocessedPageFiles = ['**/dist/**/*.*', '**/assets/*.js'];
     if (process.env.DEPLOY_ENV !== 'local') {
         config.ignoreWithinPagesDirectory.push('**/dist/**/*.*');
     }

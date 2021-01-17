@@ -2,39 +2,32 @@
 title: API Reference
 description: The Mapbox GL JS API documentation to render interactive maps from vector tiles and Mapbox styles.
 contentType: API
-navOrder: 2
+navOrder: 1
 order: 1
-hideTitle: true # hide title because we are using OverviewHeader
-layout: accordion
+layout: page
 language:
 - JavaScript
 products:
 - Mapbox GL JS
 prependJs:
-- "import OverviewHeader from '@mapbox/dr-ui/overview-header';"
 - "import Quickstart from '../../components/quickstart';"
 - "import Example from '../../components/example';"
 - "import SimpleMapHtml from '../example/simple-map.html';"
 - "import Copyable from '../../components/copyable';"
 - "import urls from '../../components/urls';"
-- "import {version} from '../../../mapbox-gl-js/package.json';"
+- "import AppropriateImage from '../../components/appropriate-image';"
+overviewHeader:
+  title: Mapbox GL JS
+  features:
+    - "Custom map styles"
+    - "Fast vector maps"
+    - "Compatible with other Mapbox tools"
+  changelogLink: "https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md"
+  ghLink: "https://github.com/mapbox/mapbox-gl-js"
+  installLink: "https://www.mapbox.com/install/js/"
+  image: simple-map
+  # version="" version is set dynamically in page-shell.js
 ---
-
-{{
-    <OverviewHeader
-    features={[
-        "Custom map styles",
-        "Fast vector maps",
-        "Compatible with other Mapbox tools"
-    ]}
-    title="Mapbox GL JS"
-    version={version}
-    changelogLink="https://github.com/mapbox/mapbox-gl-js/blob/main/CHANGELOG.md"
-    ghLink="https://github.com/mapbox/mapbox-gl-js"
-    installLink="https://www.mapbox.com/install/js/"
-    image={<div />}
-    />
-}}
 
 Mapbox GL JS is a JavaScript library that uses WebGL to render interactive maps from [vector tiles](https://docs.mapbox.com/help/glossary/vector-tiles/) and [Mapbox styles](/mapbox-gl-js/style-spec/). It is part of the Mapbox GL ecosystem, which includes [Mapbox Mobile](https://www.mapbox.com/mobile/), a compatible renderer written in C++ with bindings for desktop and mobile platforms.
 
@@ -74,6 +67,115 @@ This documentation is divided into several sections:
 * [**Events**](/mapbox-gl-js/api/events/). This section describes the different types of events that Mapbox GL JS can raise.
 
 Each section describes classes or objects as well as their **properties**, **parameters**, **instance members**, and associated **events**. Many sections also include inline code examples and related resources.
+
+## New in v2
+
+{{ <div class="mb12"><AppropriateImage imageId="v2-terrain" alt="3D elevated terrain in GL JS v2" /></div> }}
+
+Mapbox GL JS v2 enables 3D mapping with elevated terrain, customizable skies, a new camera, and performance enhancements.
+
+* [**3D terrain**](/mapbox-gl-js/example/add-terrain/): Mapbox GL JS v2 adds elevated terrain rendering. Existing layer types and APIs will continue to work with the new 3D terrain. The new Mapbox Raster Data API service provides raster terrain tiles for use with the new 3D terrain.
+* [**Sky layer**](/mapbox-gl-js/example/atmospheric-sky/): To allow for highly pitched 3D maps, Mapbox GL JS v2 adds a sky layer that enables a customizable sky filling the space above the map horizon. The sky layer can have a custom color gradient or simulate real-world atmospheric scattering of light.
+* [**`FreeCamera` API**](/mapbox-gl-js/example/free-camera-point/): Mapbox GL JS v2 provides a new low-level camera API known as the `FreeCamera` API. The `FreeCamera` allows you to move and animate the camera location and camera target independently of each other.
+* **Improved performance**: Compared to v1, Mapbox GL JS v2 improves load time by up to 50% and renders more tile content during camera animations. In benchmark tests, the median map load time improved by 30%. v2 also optimizes resource loading and task scheduling to leave more CPU resources available for your application.
+
+## Migrating to v2
+
+Mapbox GL JS v2 is backwards-compatible and existing layers and APIs will continue to work as expected, but there are some things to be aware of before upgrading to v2.
+
+* Mapbox GL JS v2 ends support for Internet Explorer 11. If you need to support Internet Explorer, consider using the [Mapbox Static Images API](https://docs.mapbox.com/api/maps/static-images/) for non-interactive maps or using the [Mapbox Static Tiles API](https://docs.mapbox.com/api/maps/static-tiles/) with another library (for example, [Mapbox.js](https://docs.mapbox.com/mapbox.js/) or [Leaflet](https://leafletjs.com/)) for interactive maps.
+* The default `maxPitch` is increased from 60° to 85°. This change will make it possible to view above the horizon when the map is fully pitched. By default, this area will be transparent to any pixels behind the map on a website or in an application. A [sky layer](/mapbox-gl-js/style-spec/layers/#sky) can be added to the map to fill this space with a realistic, customizable sky.
+* A valid Mapbox access token is required to instantiate a `Map` object. Assign a token using `mapboxgl.accessToken` or in the `Map` constructor options. To create an account or a new access token, visit [https://account.mapbox.com](https://account.mapbox.com/).
+* The action that triggers a map load has changed. In v1, a map load would occur whenever a `Map` instance is created *and* the map requested Mapbox-hosted tile resources. In v2, a map load occurs whenever a `Map` instance is created regardless of whether the map requests any Mapbox-hosted tile resources. Before updating an existing implementation of GL JS to v2, review the [pricing documentation](https://docs.mapbox.com/accounts/guides/pricing/#web-maps).
+* **Known issues:**
+  * *Sky*: The horizon is not appropriately handled when used with map padding.
+  * *High pitch:* Two-finger rotate gestures may break for touch points above the horizon.
+  * *High pitch:* Water may hide land on tilted 2D maps due to a loss of sampling precision.
+  * *Terrain + High pitch:* The `GeolocateControl` isn't rendered correctly.
+  * *Terrain + Safari iOS:* Image sources may "leak" beyond their expected bounds on highly tilted maps.
+  * *Terrain:* `*-translate` properties for `symbol`, `circle`, and `fill-extrusion` layers do not account for terrain height.
+  * *Terrain:* Tile level-of-detail causes terrain height to flicker when switching zoom levels often.
+  * *Terrain:* The draw order of labels between custom image sources and terrain is not honored.
+  * *Terrain:* Large map-aligned text is poorly draped on exaggerated terrain.
+  * *Terrain:* Paint properties update in steps at integer zoom levels.
+  * *Terrain:* The height map for over-zoomed tiles is not being retained.
+  * To report new issues with Mapbox GL JS v2, create a [bug report](https://github.com/mapbox/mapbox-gl-js/issues/new?template=Bug_report.md) on GitHub.
+
+## Transpiling v2
+
+Mapbox GL JS v2 is distributed as an ES6 compatible JavaScript bundle and is compatible with all major modern browsers. If you are using v2 with a module bundler such as Webpack or Rollup along with a transpiler such as Babel, use the ignore option in Babel to prevent Mapbox GL JS from being transpiled:
+
+* If you are using Webpack, you can use the `!` prefix in the import statement to exclude mapbox-gl from being transformed by existing loaders. See Webpack loaders [inline usage docs](https://webpack.js.org/concepts/loaders/#inline) for more details.
+
+```js
+import mapboxgl from '!mapbox-gl';
+```
+
+**OR**
+
+* You can also configure this centrally in `webpack.config.js` by adding the [ignore](https://babeljs.io/docs/en/options#ignore) option to Babel.
+
+```
+use: {
+  loader: 'babel-loader',
+  options: {
+    presets: ['my-custom-babel-preset'],
+    ..,
+    ..,
+    ignore: [ './node_modules/mapbox-gl/mapbox-gl.js' ]
+  }
+}
+```
+
+### Forcing Transpilation with Babel
+
+If your application requires ES5 compatibility, then your module bundler needs to be configured to load and transpile Mapbox GL JS's WebWorker separately. Mapbox GL JS can be configured with bundler specific `worker-loader` plugins. (See. [webpack-worker-loader] (https://webpack.js.org/loaders/worker-loader/) and [rollup-plugin-worker-loader](https://www.npmjs.com/package/rollup-plugin-web-worker-loader)).
+
+
+* If you are using Webpack, you can configure `worker-loader` to be used inline when importing mapbox-gl:
+
+```js
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl-csp';
+import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker'; // Load worker code separately with worker-loader
+
+mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
+let map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    center: [-74.5, 40], // starting position [lng, lat]
+    zoom: 9 // starting zoom
+});
+```
+
+**OR**
+
+* You can also configure `worker-loader` centrally in `webpack.config.js` :
+```
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\bmapbox-gl-csp-worker.js\b/i,
+        use: { loader: "worker-loader" },
+      },
+    ],
+  },
+};
+```
+and then integrate the Webpack loaded worker with Mapbox GL JS:
+
+```js
+import mapboxgl from 'mapbox-gl/dist/mapbox-gl';
+import MapboxWorker from 'mapbox-gl/dist/mapbox-gl-csp-worker';
+
+mapboxgl.workerClass = MapboxWorker;
+let map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    center: [-74.5, 40], // starting position [lng, lat]
+    zoom: 9 // starting zoom
+});
+```
 
 
 ## CSP Directives
