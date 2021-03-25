@@ -12,9 +12,12 @@ products:
 - Mapbox GL JS
 prependJs:
 - "import Example from '../../components/example';"
-- "import html from './playback-locations.html';"
+- "import html from './playback-locations.html?code';"
+- "import iframe from './playback-locations.html?iframe';"
 ---
 
-Autoplay the locations of boroughs in New York City.
+This example autoplays through a series of locations in New York City.
 
-{{ <Example html={html} {...this.props} /> }}
+It uses a variable to define a collection of locations, each with a title, description, center, and other properties. Then it defines an automatic playback function and uses that function with [`flyTo`](/mapbox-gl-js/api/map/#map#flyto) to autoplay through locations on the map and update the descriptive overlay.
+
+{{ <Example html={html} iframeSrc={iframe} {...this.props} /> }}

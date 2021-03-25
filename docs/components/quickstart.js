@@ -1,7 +1,8 @@
 import React from 'react';
-import urls from './urls';
 import Copyable from './copyable';
 import ControlToggleSet from '@mapbox/mr-ui/control-toggle-set';
+
+const { urls } = require('./example-utils');
 
 class Quickstart extends React.Component {
     constructor(props) {
@@ -13,8 +14,8 @@ class Quickstart extends React.Component {
     }
 
     mapOptions = `{
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    container: 'map', // container ID
+    style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: [-74.5, 40], // starting position [lng, lat]
     zoom: 9 // starting zoom
 }`;
@@ -46,8 +47,8 @@ var map = new mapboxgl.Map(${this.mapOptions});
                     <code>&lt;head&gt;</code> of your HTML file.
                 </p>
                 <Copyable lang="markup">{`
-<script src='${urls.js()}'></script>
-<link href='${urls.css()}' rel='stylesheet' />
+<script src='${urls().js}'></script>
+<link href='${urls().css}' rel='stylesheet' />
 `}</Copyable>
 
                 <p>
@@ -60,6 +61,7 @@ var map = new mapboxgl.Map(${this.mapOptions});
     }
 
     renderBundler() {
+        const bundlerCss = `import 'mapbox-gl/dist/mapbox-gl.css';`;
         const bundlerMapJs = `
 import mapboxgl from 'mapbox-gl'; // or "const mapboxgl = require('mapbox-gl');"
 
@@ -77,13 +79,18 @@ npm install --save mapbox-gl
                     your HTML file.
                 </p>
                 <Copyable lang="markup">{`
-<link href='${urls.css()}' rel='stylesheet' />
+<link href='${urls().css}' rel='stylesheet' />
 `}</Copyable>
-
                 <p>
-                    Include the following code in the <code>&lt;body&gt;</code>{' '}
-                    of your HTML file.
+                    If you&apos;re using a CSS loader like{' '}
+                    <a href="https://webpack.js.org/loaders/css-loader/">
+                        webpack css-loader
+                    </a>
+                    , you can import the CSS directly in your JavaScript.
                 </p>
+                <Copyable lang="javascript">{bundlerCss}</Copyable>
+
+                <p>Include the following code in your JavaScript file.</p>
                 <Copyable lang="javascript">{bundlerMapJs}</Copyable>
             </div>
         );

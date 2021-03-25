@@ -12,10 +12,14 @@ products:
 prependJs:
 - "import Quickstart from '../../components/quickstart';"
 - "import Example from '../../components/example';"
-- "import SimpleMapHtml from '../example/simple-map.html';"
+- "import SimpleMapHtml from '../example/simple-map.html?code';"
+- "import SimpleMapIframe from '../example/simple-map.html?iframe';"
 - "import Copyable from '../../components/copyable';"
-- "import urls from '../../components/urls';"
 - "import AppropriateImage from '../../components/appropriate-image';"
+- "import Note from '@mapbox/dr-ui/note';"
+- "import { PricingProductOverview } from '../../components/pricing-product-overview';"
+- "const {urls} = require('../../components/example-utils');"
+
 overviewHeader:
   title: Mapbox GL JS
   features:
@@ -31,10 +35,10 @@ overviewHeader:
 
 Mapbox GL JS is a JavaScript library that uses WebGL to render interactive maps from [vector tiles](https://docs.mapbox.com/help/glossary/vector-tiles/) and [Mapbox styles](/mapbox-gl-js/style-spec/). It is part of the Mapbox GL ecosystem, which includes [Mapbox Mobile](https://www.mapbox.com/mobile/), a compatible renderer written in C++ with bindings for desktop and mobile platforms.
 
-
 ## Quickstart
 
-{{
+{{ 
+  <div className='mb18'>
     <Example
         frontMatter={{
           title: 'Mapbox GL JS map',
@@ -44,7 +48,9 @@ Mapbox GL JS is a JavaScript library that uses WebGL to render interactive maps 
         html={SimpleMapHtml}
         displaySnippet={false}
         height={300}
+        iframeSrc={SimpleMapIframe}
     />
+  </div>
 }}
 
 To get started, you need an [access token](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/) and a [style URL](https://docs.mapbox.com/help/glossary/style-url/). You can choose from one of our [professionally designed styles](https://docs.mapbox.com/api/maps/#styles) or create your own using [Mapbox Studio](https://studio.mapbox.com/).
@@ -53,6 +59,9 @@ To get started, you need an [access token](https://docs.mapbox.com/help/how-mapb
 <Quickstart />
 }}
 
+You can see and interact with similar code in these Mapbox GL JS examples:
+* [Display a map on a webpage](/mapbox-gl-js/example/simple-map/)
+* [Display a satellite map on a webpage](/mapbox-gl-js/example/satellite-map/)
 
 ## Reading this documentation
 
@@ -122,7 +131,7 @@ use: {
     presets: ['my-custom-babel-preset'],
     ..,
     ..,
-    ignore: [ './node_modules/mapbox-gl/mapbox-gl.js' ]
+    ignore: [ './node_modules/mapbox-gl/dist/mapbox-gl.js' ]
   }
 }
 ```
@@ -140,8 +149,8 @@ import MapboxWorker from 'worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker'; //
 
 mapboxgl.workerClass = MapboxWorker; // Wire up loaded worker to be used instead of the default
 let map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    container: 'map', // container ID
+     style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: [-74.5, 40], // starting position [lng, lat]
     zoom: 9 // starting zoom
 });
@@ -170,8 +179,8 @@ import MapboxWorker from 'mapbox-gl/dist/mapbox-gl-csp-worker';
 
 mapboxgl.workerClass = MapboxWorker;
 let map = new mapboxgl.Map({
-    container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
+    container: 'map', // container ID
+    style: 'mapbox://styles/mapbox/streets-v11', // style URL
     center: [-74.5, 40], // starting position [lng, lat]
     zoom: 9 // starting zoom
 });
@@ -197,9 +206,9 @@ connect-src https://*.tiles.mapbox.com https://api.mapbox.com https://events.map
 For strict CSP environments without `worker-src blob: ; child-src blob:` enabled, there's a separate Mapbox GL JS bundle (`mapbox-gl-csp.js` and `mapbox-gl-csp-worker.js`) which requires setting the path to the worker manually:
 
 {{
-<Copyable lang="html">{`<script src='${urls.js().replace('.js', '-csp.js')}'></script>
+<Copyable lang="html">{`<script src='${urls().js.replace('.js', '-csp.js')}'></script>
 <script>
-mapboxgl.workerUrl = "${urls.js().replace('.js', '-csp-worker.js')}";
+mapboxgl.workerUrl = "${urls().js.replace('.js', '-csp-worker.js')}";
 ...
 </script>`}</Copyable>
 }}
@@ -219,3 +228,30 @@ The CSS referenced in the Quickstart is used to style DOM elements created by Ma
 Including it with a `<link>` in the head of the document via the Mapbox CDN is the simplest and easiest way to provide the CSS, but it is also bundled in the Mapbox module, meaning that if you have a bundler that can handle CSS, you can import the CSS from `mapbox-gl/dist/mapbox-gl.css`.
 
 Note too that if the CSS isn't available by the first render, as soon as the CSS is provided, the DOM elements that depend on this CSS should recover.
+
+## Pricing
+
+{{
+<PricingProductOverview
+  unit="Map Loads for Web"
+  lineItems="map load"
+  pricingSection="Sessions & user prices"
+  pricingSectionLink="#maploads"
+/>
+}}
+
+Pricing for Mapbox GL JS v1.0.0 and higher is measured by **Map Loads for Web**. For information on how older versions of Mapbox GL JS are priced, see our [pricing documentation for Mapbox GL JS <v1.0.0](https://docs.mapbox.com/accounts/guides/pricing/#mapbox-gl-js--v100).
+
+{{<Note title="Mapbox GL JS v1.x.x compared to v2.x.x">}}
+The action that triggers a map load changed in Mapbox GL JS v2.0.0:
+
+- **Mapbox GL JS v2.x.x**: A map load occurs whenever a Mapbox GL JS [`Map`](https://docs.mapbox.com/mapbox-gl-js/api/#map) object is initialized on a webpage.
+- **Mapbox GL JS v1.x.x**: A map load occurs whenever a Mapbox GL JS [`Map`](https://docs.mapbox.com/mapbox-gl-js/api/#map) object is initialized on a webpage _and_ you request a Mapbox-hosted map tile.
+
+Before updating an existing implementation from v1.x.x to v2.x.x, review this pricing documentation to estimate expected costs.
+{{</Note>}}
+
+
+Web maps using Mapbox GL JS v1.0.0 and higher are billed by **Map Loads for Web**. Beginning with Mapbox GL JS v2.0.0, a map load occurs whenever a Mapbox GL JS [`Map`](https://docs.mapbox.com/mapbox-gl-js/api/#map) object is initialized. Measuring usage by map loads means that users interacting with your web map can toggle layers from non-composited sources on and off, zoom and pan around the map, and toggle between styles without affecting your usage. You can also add non-composited vector or raster sources to your map at runtime without incurring additional charges. The maximum session length for a map load is 12 hours. If a user has the same map open after 12 hours, Mapbox will count that as a new map load session.
+
+For an overview of how to manage your costs for common interactive, non-interactive, and hybrid web map implementations, see the [Manage your web map costs](https://docs.mapbox.com/help/troubleshooting/manage-web-map-costs/) troubleshooting guide.

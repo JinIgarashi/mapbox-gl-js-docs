@@ -12,9 +12,12 @@ products:
 - Mapbox GL JS
 prependJs:
 - "import Example from '../../components/example';"
-- "import html from './map-tiles.html';"
+- "import html from './map-tiles.html?code';"
+- "import iframe from './map-tiles.html?iframe';"
 ---
 
-Add a third-party raster source to the map.
+This example adds third-party raster tiles to a map by defining a custom style.
 
-{{ <Example html={html} {...this.props} /> }}
+The [style](https://docs.mapbox.com/help/glossary/style/) defines a [`raster` source](/mapbox-gl-js/style-spec/sources/#raster) with an external URL for the `tiles` parameter. The source is used by [`raster` layer](/mapbox-gl-js/style-spec/layers/#raster).
+
+{{ <Example html={html} iframeSrc={iframe} {...this.props} /> }}
